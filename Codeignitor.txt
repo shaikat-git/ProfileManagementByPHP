@@ -1,0 +1,101 @@
+Codeignitor
+=>Codeignitor download, unzip and paste it in a folder under htdocs.
+=>"webcoach/application/config/database.php", edit hostname, username, password.
+=> htdocs/webcoach/application/controllers. Here open a file named Hello_world.php and write this=>
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class Hello_world extends CI_Controller{
+  function index(){
+    $data['title']='My first application created with Code Igniter';
+    $data['message']='Hello world!';
+// load 'helloworld' view
+    $this->load->view('helloworld',$data);
+  }
+}
+?>
+
+webcoach/application/views and in helloworld.php write down this>
+<html>
+<head>
+<title><?php echo $title;?></title>
+</head>
+<body>
+<h1><?php echo $message?></h1>
+</body>
+</html>
+
+Now write down in addressbar http://localhost/webcoach/index.php/hello_world
+	Custom query in codeiggnitor
+	$sql= 'SELECT colum1,column2 FROM table_name WHERE id IN (3,7,9)';
+	$query = $this->db->query($sql);
+	$results = $query->result_array()
+
+webcoach/application/config/autoload.php for working with database open it and autoload the database library
+$autoload['libraries'] = array('database');
+
+Create a database name wch_cit and write this sql code
+CREATE TABLE IF NOT EXISTS `users` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `username` varchar(50) NOT NULL,
+ `email` varchar(50) NOT NULL,
+ `about` text NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+ 
+INSERT INTO `users` (`id`, `username`, `email`, `about`) VALUES
+(1, 'rejoan', 'rejoan.er@gmail.com', 'I am rejoanul alam from webcoachbd'),
+(2, 'adnan', 'adnan@gmail.com', 'I am adnan from bangladesh'),
+(3, 'shuva', 'shuva@gmail.com', 'This is Shuva Chakraborty from kolkata');
+
+Write down this in webcoach/application/controllers/Users.php file
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+  class Users extends CI_Controller {
+ 
+    public function index(){
+      $data['title'] = 'Fetch Database Info';
+      $query = $this->db->get('users');
+      $data['users'] = $query->result_array();
+      $this->load->view('users',$data);
+   }
+}
+
+Write down this in webcoach/application/views/users.php file
+<html>
+ <head>
+  <title><?php echo $title; ?></title>
+ </head>
+ <body>
+    <?php foreach($users as $user):?>
+       <h2>Name : <?php echo $user['username'];?></h2>
+       <p>Email : <?php echo $user['email']; ?></p>
+       <p>Details : <?php echo $user['about']; ?></p>
+    <?php endforeach;?>
+ </body>
+</html>
+
+Working with model
+ webcoach/application/models/Prime_model.php
+<?php
+class Prime_model extends CI_Model {
+  public function get_data($table) {
+    $query = $this->db->get($table);
+    return $query->result_array();
+  }
+}
+webcoach/application/controllers/Users.php
+
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class Users extends CI_Controller {
+ 
+  public function index(){
+    $this->load->model('prime_model');
+    $data['title'] = 'Fetch Database Info';
+    $data['users'] = $this->prime_model->get_data('users');
+    $this->load->view('users',$data);
+  }
+}
+
+Now write again in address bar
+http://localhost/webcoach/index.php/users
